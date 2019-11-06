@@ -3,30 +3,24 @@
 package uk.co.geolib.geoprojections;
 
 /**
-* Class representing an albers equal area projection.
-*
-*/
-public class Orthographic extends Projection
-{
+ * Class representing an albers equal area projection.
+ */
+public class Orthographic extends Projection {
 
-/**
-*     Constructor.
-*
-*/
-    public Orthographic()
-    {
+    /**
+     * Constructor.
+     */
+    public Orthographic() {
         m_dStandardLatitude = 0;
 
         m_dStandardLongitude = 0;
     }
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the 
-*     result.
-*
-*/
-    public void Project(double dLatY, double dLongX)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the
+     * result.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
@@ -36,7 +30,7 @@ public class Orthographic extends Projection
         double x = cos_Lat * Math.sin(dLongX - m_dStandardLongitude);
 
         double y = Math.cos(m_dStandardLatitude) * Math.sin(dLatY) -
-                    Math.sin(m_dStandardLatitude) * cos_Lat * Math.cos(dLongX - m_dStandardLongitude);
+                Math.sin(m_dStandardLatitude) * cos_Lat * Math.cos(dLongX - m_dStandardLongitude);
 
         dLatY = y;
 
@@ -44,25 +38,21 @@ public class Orthographic extends Projection
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project(GeoLatLong rLatLong, double dx, double dy)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
         dx = rLatLong.GetLong();
 
         Project(dy, dx);
     }
 
-/**
-*     Project the given x y to lat long using the input parameters to store  the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX)
-    {
+    /**
+     * Project the given x y to lat long using the input parameters to store  the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
         double p = Math.sqrt(dLongX * dLongX + dLatY * dLatY);
 
         double c = Math.asin(p);
@@ -78,8 +68,7 @@ public class Orthographic extends Projection
         double dLat = Math.asin(cos_c * sin_olat + dLatY * sin_c * cos_olat / p);
 
         double dLong = m_dStandardLongitude +
-             Math.atan2(dLongX * sin_c, p * cos_olat * cos_c - dLatY * sin_olat * sin_c);
-
+                Math.atan2(dLongX * sin_c, p * cos_olat * cos_c - dLatY * sin_olat * sin_c);
 
 
         dLatY = dLat * Constants.conDegreesPerRadian;
@@ -88,12 +77,10 @@ public class Orthographic extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong, double dX, double dY)
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLat = dY;
 
         double dLong = dX;
@@ -106,14 +93,10 @@ public class Orthographic extends Projection
     }
 
 
-
-
-/**
-*    
-*
-*/
-    void SetOrigin(double dLat, double dLong)
-    {
+    /**
+     *
+     */
+    void SetOrigin(double dLat, double dLong) {
         m_dStandardLatitude = dLat * Constants.conRadiansPerDegree;
 
         m_dStandardLongitude = dLong * Constants.conRadiansPerDegree;

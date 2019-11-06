@@ -1,31 +1,24 @@
 
 
 
-
 package uk.co.geolib.geoprojections;
 
 /**
-* Class representing a circle.
-*
-*/
-public class MillerCylindrical extends Projection
-{
-/**
-*    Constructor.
-*
-*/
-    public MillerCylindrical()
-    {
+ * Class representing a circle.
+ */
+public class MillerCylindrical extends Projection {
+    /**
+     * Constructor.
+     */
+    public MillerCylindrical() {
         m_dStandardLongitude = 0;
     }
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the 
-*     result.
-*
-*/
-    public void Project(double dLatY, double dLongX)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the
+     * result.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
@@ -33,19 +26,16 @@ public class MillerCylindrical extends Projection
 
         dLongX = dLongX - m_dStandardLongitude;
 
-        dLatY = 1.25 * Math.log( Math.tan(Constants.conQUARTPI + 0.2 * dLatY));
+        dLatY = 1.25 * Math.log(Math.tan(Constants.conQUARTPI + 0.2 * dLatY));
 
     }
 
 
-
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project(GeoLatLong rLatLong, double dx, double dy)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
 
         dx = rLatLong.GetLong();
@@ -53,15 +43,13 @@ public class MillerCylindrical extends Projection
         Project(dy, dx);
     }
 
-/**
-*     Project the given x y to lat long using the input parameters to store the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX)
-    {
+    /**
+     * Project the given x y to lat long using the input parameters to store the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
         //	m_dLat = 2.5 * a Math.tan(  Math.pow(conE, 0.8 * dLatY)) - 0.625 * Constants.conPI;	// orig
 
-        dLatY = 5 * Math.atan( Math.pow(Constants.conE, 0.8 * dLatY)) - 1.25 * Constants.conPI;
+        dLatY = 5 * Math.atan(Math.pow(Constants.conE, 0.8 * dLatY)) - 1.25 * Constants.conPI;
 
         dLongX = dLongX + m_dStandardLongitude;
 
@@ -71,12 +59,10 @@ public class MillerCylindrical extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong, double dX, double dY)
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLatY = dY;
 
         double dLongX = dX;
@@ -89,12 +75,12 @@ public class MillerCylindrical extends Projection
     }
 
 
-/**
-*
-*/
-    public void SetStandardLongitude(double dStandardLongitude)
-    {
+    /**
+     *
+     */
+    public void SetStandardLongitude(double dStandardLongitude) {
         m_dStandardLongitude = dStandardLongitude * Constants.conRadiansPerDegree;
     }
+
     private double m_dStandardLongitude;
 }

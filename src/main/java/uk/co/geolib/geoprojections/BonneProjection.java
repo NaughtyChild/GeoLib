@@ -4,32 +4,23 @@
 package uk.co.geolib.geoprojections;
 
 
-
-
 /**
-* Class representing a circle.
-*
-*/
-public class BonneProjection extends Projection
-{
+ * Class representing a circle.
+ */
+public class BonneProjection extends Projection {
 
-/**
-*     Constructor.
-*
-*/
-    public BonneProjection()
-    {
+    /**
+     * Constructor.
+     */
+    public BonneProjection() {
         SetOrigin(40.0, 0);
     }
 
 
-
-/**
-*     Projection.
-*
-*/
-    public void Project(double dLatY, double dLongX)
-    {
+    /**
+     * Projection.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
@@ -44,13 +35,11 @@ public class BonneProjection extends Projection
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project(GeoLatLong rLatLong, double dx, double dy)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
 
         dx = rLatLong.GetLong();
@@ -58,36 +47,33 @@ public class BonneProjection extends Projection
         Project(dy, dx);
     }
 
-/**
-*     brief Project the given x y to lat long using the input parameters to store the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX)
-    {
+    /**
+     * brief Project the given x y to lat long using the input parameters to store the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
         double cot_SPLessY = m_cot_SP - dLatY;
 
         double dP;
 
         if (dLatY >= m_cot_SP)
-	        dP = - Math.sqrt(dLongX * dLongX + cot_SPLessY * cot_SPLessY);
+            dP = -Math.sqrt(dLongX * dLongX + cot_SPLessY * cot_SPLessY);
         else
-	        dP = Math.sqrt(dLongX * dLongX + cot_SPLessY * cot_SPLessY);
+            dP = Math.sqrt(dLongX * dLongX + cot_SPLessY * cot_SPLessY);
 
         double dLat = m_cot_SP + m_dStandardParallel - dP;
         // Added a fix on the inverse which happens around the extemes of longitude 
         boolean bfix = false;
-        if (dLat > Constants.conHALFPI)
-        {
-	        bfix = true;
-	        dLat = m_cot_SP + m_dStandardParallel + dP;
+        if (dLat > Constants.conHALFPI) {
+            bfix = true;
+            dLat = m_cot_SP + m_dStandardParallel + dP;
         }
 
-        double dA = Math.atan2( dLongX , ( m_cot_SP - dLatY) );
+        double dA = Math.atan2(dLongX, (m_cot_SP - dLatY));
 
-        double dLong = m_dCentralMeridian + (dP * dA ) / Math.cos(dLat) ;
+        double dLong = m_dCentralMeridian + (dP * dA) / Math.cos(dLat);
 
         if (bfix)
-	        dLong *= -1;
+            dLong *= -1;
 
         dLatY = dLat * Constants.conDegreesPerRadian;
 
@@ -95,12 +81,10 @@ public class BonneProjection extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong, double dX, double dY)
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLat = dY;
 
         double dLong = dX;
@@ -112,12 +96,10 @@ public class BonneProjection extends Projection
         rLatLong.SetLongDegrees(dLong);
     }
 
-/**
-*     Sets the origin.
-*
-*/
-    public void SetOrigin(double dStandardParallel, double dCentralMeridian)
-    {
+    /**
+     * Sets the origin.
+     */
+    public void SetOrigin(double dStandardParallel, double dCentralMeridian) {
         m_dStandardParallel = dStandardParallel * Constants.conRadiansPerDegree;
 
         m_dCentralMeridian = dCentralMeridian * Constants.conRadiansPerDegree;

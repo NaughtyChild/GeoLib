@@ -4,32 +4,26 @@ package uk.co.geolib.geoprojections;
 
 
 /**
-* Class representing a circle.
-*
-*/
-public class Gnomonic extends Projection
-{
+ * Class representing a circle.
+ */
+public class Gnomonic extends Projection {
 
 
-/**
-*     Constructor.
-*
-*/
-    public Gnomonic()
-    {
+    /**
+     * Constructor.
+     */
+    public Gnomonic() {
         m_dStandardLatitude = 0;
 
         m_dStandardLongitude = 0;
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the 
-*     result.
-*
-*/
-    public void Project(double dLatY, double dLongX) 
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the
+     * result.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
@@ -42,36 +36,32 @@ public class Gnomonic extends Projection
 
         double cos_Dlong = Math.cos(dLongX - m_dStandardLongitude);
 
-        double cos_C = sin_Olat* sin_lat + cos_Olat* cos_lat* cos_Dlong;
+        double cos_C = sin_Olat * sin_lat + cos_Olat * cos_lat * cos_Dlong;
 
         dLongX = cos_lat * Math.sin(dLongX - m_dStandardLongitude) / cos_C;
-    					
-        dLatY = (cos_Olat * sin_lat - sin_Olat * cos_lat * cos_Dlong ) / cos_C;
+
+        dLatY = (cos_Olat * sin_lat - sin_Olat * cos_lat * cos_Dlong) / cos_C;
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project( GeoLatLong rLatLong, double dx, double dy) 
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
         dx = rLatLong.GetLong();
 
         Project(dy, dx);
     }
 
-/**
-*     Project the given x y to lat long using the input parameters to store the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX) 
-    {
+    /**
+     * Project the given x y to lat long using the input parameters to store the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
         double P = Math.sqrt(dLongX * dLongX + dLatY * dLatY);
 
-        double C = Math.atan( P );
+        double C = Math.atan(P);
 
         double sin_Olat = Math.sin(m_dStandardLatitude);
         double cos_Olat = Math.cos(m_dStandardLatitude);
@@ -79,12 +69,12 @@ public class Gnomonic extends Projection
         double sin_C = Math.sin(C);
         double cos_C = Math.cos(C);
 
-        double dLat = Math.asin(  cos_C* sin_Olat + (dLatY * sin_C * cos_Olat) / P);
+        double dLat = Math.asin(cos_C * sin_Olat + (dLatY * sin_C * cos_Olat) / P);
 
-    //	double dLong = m_dStandardLongitude + 
-    //		a Math.tan( dLongX * sin_C / (P * Math.Cos_Olat * Math.Cos_C - dLatY * sin_Olat * sin_C)  );
-        double dLong = m_dStandardLongitude + 
-	         Math.atan2( dLongX * sin_C , (P * cos_Olat * cos_C - dLatY * sin_Olat * sin_C)  );
+        //	double dLong = m_dStandardLongitude +
+        //		a Math.tan( dLongX * sin_C / (P * Math.Cos_Olat * Math.Cos_C - dLatY * sin_Olat * sin_C)  );
+        double dLong = m_dStandardLongitude +
+                Math.atan2(dLongX * sin_C, (P * cos_Olat * cos_C - dLatY * sin_Olat * sin_C));
 
         dLatY = dLat * Constants.conDegreesPerRadian;
 
@@ -92,12 +82,10 @@ public class Gnomonic extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong,  double dX,  double dY) 
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLat = dY;
 
         double dLong = dX;
@@ -110,14 +98,10 @@ public class Gnomonic extends Projection
     }
 
 
-
-
-/**
-*    
-*
-*/
-    void SetOrigin(double dLat, double dLong)
-    {
+    /**
+     *
+     */
+    void SetOrigin(double dLat, double dLong) {
         m_dStandardLatitude = dLat * Constants.conRadiansPerDegree;
 
         m_dStandardLongitude = dLong * Constants.conRadiansPerDegree;

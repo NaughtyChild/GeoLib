@@ -3,61 +3,51 @@
 package uk.co.geolib.geoprojections;
 
 /**
-* Class representing a circle.
-*
-*/
-public class Mercator extends Projection
-{
+ * Class representing a circle.
+ */
+public class Mercator extends Projection {
 
 
-/**
-*    Constructor.
-*
-*/
-    public Mercator()
-    {
+    /**
+     * Constructor.
+     */
+    public Mercator() {
         m_dStandardLongitude = 0;
     }
 
-/**
-*    Constructor.
-*
-*/
-    public void Project(double dLatY, double dLongX)
-    {
+    /**
+     * Constructor.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
 
         double x = dLongX - m_dStandardLongitude;
 
-        double y = Math.log( Math.tan(dLatY) + 1 / Math.cos(dLatY));
+        double y = Math.log(Math.tan(dLatY) + 1 / Math.cos(dLatY));
 
         dLatY = y;
 
         dLongX = x;
     }
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project(GeoLatLong rLatLong, double dx, double dy)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
         dx = rLatLong.GetLong();
 
         Project(dy, dx);
     }
 
-/**
-*     Project the given x y to lat long using the input parameters to store 
-*     the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX)
-    {
+    /**
+     * Project the given x y to lat long using the input parameters to store
+     * the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
         double dLat = Math.atan(Math.sinh(dLatY));
 
         double dLong = dLongX + m_dStandardLongitude;
@@ -68,12 +58,10 @@ public class Mercator extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong, double dX, double dY)
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLat = Math.atan(Math.sinh(dX));
 
         double dLong = dY + m_dStandardLongitude;
@@ -83,11 +71,10 @@ public class Mercator extends Projection
         rLatLong.SetLong(dLong);
     }
 
-/**
-*
-*/
-    public void SetStandardLongitude(double dStandardLongitude)
-    {
+    /**
+     *
+     */
+    public void SetStandardLongitude(double dStandardLongitude) {
         m_dStandardLongitude = dStandardLongitude * Constants.conRadiansPerDegree;
     }
 

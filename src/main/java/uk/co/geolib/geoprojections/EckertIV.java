@@ -3,30 +3,23 @@
 package uk.co.geolib.geoprojections;
 
 /**
-* Class representing a circle.
-*
-*/
-public class EckertIV extends Projection
-{
+ * Class representing a circle.
+ */
+public class EckertIV extends Projection {
 
-/**
-*     Constructor.
-*
-*/
-    public EckertIV()
-    {
+    /**
+     * Constructor.
+     */
+    public EckertIV() {
         m_dStandardLongitude = 0;
     }
 
 
-
-/**
-*     Project the given lat long to x, y using the input parameters to store the 
-*     result.
-*
-*/
-    public void Project(double dLatY, double dLongX) 
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the
+     * result.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
@@ -39,45 +32,40 @@ public class EckertIV extends Projection
 
         int nMaxIt = 50;
 
-        int nIt = 0; 
+        int nIt = 0;
 
         double sin_lat = Math.sin(dLatY);
 
-        while ( Math.abs(theta1 - theta0) > dTolerance)
-        {
-	        theta0 = theta1;
+        while (Math.abs(theta1 - theta0) > dTolerance) {
+            theta0 = theta1;
 
-	        double dSinTheta = Math.sin(theta0);
+            double dSinTheta = Math.sin(theta0);
 
-	        double dCosTheta = Math.cos(theta0);
+            double dCosTheta = Math.cos(theta0);
 
-	        theta1 -= (  theta0 + dSinTheta * dCosTheta + 2.0*dSinTheta - (2.0 + Constants.conHALFPI) * sin_lat ) /
-					        ( 2.0 * dCosTheta * ( 1.0 + dCosTheta)  );
+            theta1 -= (theta0 + dSinTheta * dCosTheta + 2.0 * dSinTheta - (2.0 + Constants.conHALFPI) * sin_lat) /
+                    (2.0 * dCosTheta * (1.0 + dCosTheta));
 
-	        nIt++;
-	        if(nIt == nMaxIt)
-	        {
-	        //	assert(0);
-		        return;
-	        }
+            nIt++;
+            if (nIt == nMaxIt) {
+                //	assert(0);
+                return;
+            }
         }
 
 
-        dLongX = 2.0 * (dLongX - m_dStandardLongitude) * (1.0 + Math.cos( theta1 )) / 
-				        Math.sqrt( Constants.conPI * (4.0 + Constants.conPI));
+        dLongX = 2.0 * (dLongX - m_dStandardLongitude) * (1.0 + Math.cos(theta1)) /
+                Math.sqrt(Constants.conPI * (4.0 + Constants.conPI));
 
-        dLatY = 2.0 * Math.sqrt( Constants.conPI / (4.0 + Constants.conPI)) * Math.sin( theta1 );
+        dLatY = 2.0 * Math.sqrt(Constants.conPI / (4.0 + Constants.conPI)) * Math.sin(theta1);
     }
 
 
-
-/**
-*    Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project( GeoLatLong rLatLong, double dx, double dy) 
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
 
         dx = rLatLong.GetLong();
@@ -85,26 +73,24 @@ public class EckertIV extends Projection
         Project(dy, dx);
     }
 
-/**
-*    Project the given x y to lat long using the input parameters to store the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX) 
-    {
-        double sin_theta = dLatY * Math.sqrt( (4.0 + Constants.conPI) / Constants.conPI) / 2.0;
+    /**
+     * Project the given x y to lat long using the input parameters to store the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
+        double sin_theta = dLatY * Math.sqrt((4.0 + Constants.conPI) / Constants.conPI) / 2.0;
 
-        double theta = Math.asin( sin_theta );
+        double theta = Math.asin(sin_theta);
 
         double cos_theta = Math.cos(theta);
 
-        dLatY = Math.asin(   (theta + sin_theta * cos_theta + 2.0 * sin_theta) /
-					          (2.0 + Constants.conHALFPI)   );
+        dLatY = Math.asin((theta + sin_theta * cos_theta + 2.0 * sin_theta) /
+                (2.0 + Constants.conHALFPI));
 
-    //	m_dLong = dStandardLongitude + Constants.conPI * Math.sqrt(4 + Constants.conPI) * Point.x / 
+        //	m_dLong = dStandardLongitude + Constants.conPI * Math.sqrt(4 + Constants.conPI) * Point.x /
         //									(1 + dCosTheta);		// out by approx  * 2+ PI/2
-    	
-        dLongX = m_dStandardLongitude + 1.00730304626 * (Constants.conPI * dLongX) / 
-									        ((1.0 + cos_theta) * Math.sqrt(1.0 + Constants.conHALFPI / 2.0)); // corrected.
+
+        dLongX = m_dStandardLongitude + 1.00730304626 * (Constants.conPI * dLongX) /
+                ((1.0 + cos_theta) * Math.sqrt(1.0 + Constants.conHALFPI / 2.0)); // corrected.
 
 
         dLatY *= Constants.conDegreesPerRadian;
@@ -113,12 +99,10 @@ public class EckertIV extends Projection
     }
 
 
-/**
-*    Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong,  double dX,  double dY) 
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLatY = dY;
 
         double dLongX = dX;
@@ -131,12 +115,10 @@ public class EckertIV extends Projection
     }
 
 
-/**
-*     Sets the standard longitude.
-*
-*/
-    public void SetStandardLongitude(double dStandardLongitude)
-    {
+    /**
+     * Sets the standard longitude.
+     */
+    public void SetStandardLongitude(double dStandardLongitude) {
         m_dStandardLongitude = dStandardLongitude * Constants.conRadiansPerDegree;
     }
 

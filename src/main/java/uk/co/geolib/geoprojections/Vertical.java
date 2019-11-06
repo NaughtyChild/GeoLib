@@ -2,30 +2,24 @@
 package uk.co.geolib.geoprojections;
 
 /**
-* Class representing an albers equal area projection.
-*
-*/
-public class Vertical extends Projection
-{
-/**
-*     Constructor.
-*
-*/
-    public Vertical()
-    {
+ * Class representing an albers equal area projection.
+ */
+public class Vertical extends Projection {
+    /**
+     * Constructor.
+     */
+    public Vertical() {
         m_dStandardLatitude = 0;
 
         m_dStandardLongitude = 0;
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the 
-*     result.
-*
-*/
-    public void Project(double dLatY, double dLongX)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the
+     * result.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
@@ -41,7 +35,7 @@ public class Vertical extends Projection
 
         double cos_dlong = Math.cos(dLongX - m_dStandardLongitude);
 
-  //      double cos_c = sin_olat * sin_lat + cos_olat * cos_lat * cos_dlong;
+        //      double cos_c = sin_olat * sin_lat + cos_olat * cos_lat * cos_dlong;
 
         dLongX = cos_lat * Math.sin(dLongX - m_dStandardLongitude);
 
@@ -53,26 +47,22 @@ public class Vertical extends Projection
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project(GeoLatLong rLatLong, double dx, double dy)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
         dx = rLatLong.GetLong();
 
         Project(dy, dx);
     }
 
-/**
-*     Project the given x y to lat long using the input parameters to store  the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX)
-    {
-        double dHeading =  Math.atan2(dLongX, dLatY);
+    /**
+     * Project the given x y to lat long using the input parameters to store  the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
+        double dHeading = Math.atan2(dLongX, dLatY);
 
         double dHRange = Math.sqrt(dLongX * dLongX + dLatY * dLatY);
 
@@ -89,7 +79,7 @@ public class Vertical extends Projection
 
         double dLat = Math.asin(sin_Olat * cos_alpha + cos_Olat * sin_alpha * Math.cos(dHeading));
 
-        double dLong = longO +  Math.atan2(Math.sin(dHeading) * sin_alpha * cos_Olat, cos_alpha - sin_Olat * Math.sin(dLat));
+        double dLong = longO + Math.atan2(Math.sin(dHeading) * sin_alpha * cos_Olat, cos_alpha - sin_Olat * Math.sin(dLat));
 
         while (dLong > Constants.conPI)
             dLong -= Constants.conTWOPI;
@@ -103,12 +93,10 @@ public class Vertical extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong, double dX, double dY)
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLat = dY;
 
         double dLong = dX;
@@ -121,14 +109,10 @@ public class Vertical extends Projection
     }
 
 
-
-
-/**
-*    
-*
-*/
-    void SetOrigin(double dLat, double dLong)
-    {
+    /**
+     *
+     */
+    void SetOrigin(double dLat, double dLong) {
         m_dStandardLatitude = dLat * Constants.conRadiansPerDegree;
 
         m_dStandardLongitude = dLong * Constants.conRadiansPerDegree;

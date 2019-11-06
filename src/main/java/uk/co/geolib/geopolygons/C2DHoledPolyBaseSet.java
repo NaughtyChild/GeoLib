@@ -7,26 +7,25 @@ import uk.co.geolib.geolib.CTransformation;
 
 import java.util.ArrayList;
 
-public class C2DHoledPolyBaseSet extends ArrayList<C2DHoledPolyBase>{
+public class C2DHoledPolyBaseSet extends ArrayList<C2DHoledPolyBase> {
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-/**
-*     Constructor.
-*
-*/
-    public C2DHoledPolyBaseSet() { }
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-/**
-*     Extracts all from the set provided.
-*
-* @param Polys The set to extract from converting to holed polygns.
-*/
-    public void ExtractAllOf(ArrayList<C2DPolyBase> Polys)
-    {
-        for (int i = 0; i < Polys.size(); i++)
-        {
+    /**
+     * Constructor.
+     */
+    public C2DHoledPolyBaseSet() {
+    }
+
+    /**
+     * Extracts all from the set provided.
+     *
+     * @param Polys The set to extract from converting to holed polygns.
+     */
+    public void ExtractAllOf(ArrayList<C2DPolyBase> Polys) {
+        for (int i = 0; i < Polys.size(); i++) {
             C2DHoledPolyBase NewPoly = new C2DHoledPolyBase();
             NewPoly.Rim = Polys.get(i);
             add(NewPoly);
@@ -35,89 +34,79 @@ public class C2DHoledPolyBaseSet extends ArrayList<C2DHoledPolyBase>{
         Polys.clear();
     }
 /**
-*     Extracts all from the set provided.
-*
-* @param Polys The set to extract from.
-*/
- //   public void ExtractAllOf(ArrayList<C2DHoledPolyBase> Polys)
-  //  {
- //       this.addAll(Polys);
- //       Polys.clear();
+ *     Extracts all from the set provided.
+ *
+ * @param Polys The set to extract from.
+ */
+    //   public void ExtractAllOf(ArrayList<C2DHoledPolyBase> Polys)
+    //  {
+    //       this.addAll(Polys);
+    //       Polys.clear();
 //    }
-/**
-*     Basic multiple unification.
-*
-*/
-    public void UnifyBasic()
-    {
+
+    /**
+     * Basic multiple unification.
+     */
+    public void UnifyBasic() {
         C2DHoledPolyBaseSet TempSet = new C2DHoledPolyBaseSet();
         C2DHoledPolyBaseSet UnionSet = new C2DHoledPolyBaseSet();
 
-        while (size() > 0)
-        {
-	        C2DHoledPolyBase pLast = this.get(size() - 1);
+        while (size() > 0) {
+            C2DHoledPolyBase pLast = this.get(size() - 1);
             this.remove(size() - 1);
 
-	        boolean bIntersect = false;
-	        int i = 0;
+            boolean bIntersect = false;
+            int i = 0;
 
-            while (i < size() && !bIntersect)
-	        {
+            while (i < size() && !bIntersect) {
                 CGrid grid = new CGrid();
                 this.get(i).GetUnion(pLast, UnionSet, grid);
 
-		        if (UnionSet.size() == 1)
-		        {
-			        this.set(i, UnionSet.get(0));
-			        bIntersect = true;
-		        }
-		        else
-		        {
+                if (UnionSet.size() == 1) {
+                    this.set(i, UnionSet.get(0));
+                    bIntersect = true;
+                } else {
                     //Debug.Assert(UnionSet.size() == 0);
-			        UnionSet.clear();
-			        i++;
-		        }
-	        }
+                    UnionSet.clear();
+                    i++;
+                }
+            }
 
-	        if (!bIntersect)
-	        {
-		        TempSet.add(pLast);
-	        }
+            if (!bIntersect) {
+                TempSet.add(pLast);
+            }
         }
 
-        this.addAll( TempSet);
+        this.addAll(TempSet);
     }
-/**
-*     Unification by growing shapes of fairly equal size (fastest for large groups).
-*
-* @param grid The CGrid with the degenerate settings.
-*/
-    public void UnifyProgressive(CGrid grid)
-    {
+
+    /**
+     * Unification by growing shapes of fairly equal size (fastest for large groups).
+     *
+     * @param grid The CGrid with the degenerate settings.
+     */
+    public void UnifyProgressive(CGrid grid) {
         // Record the degenerate handling so we can reset.
         CGrid.eDegenerateHandling DegenerateHandling = grid.DegenerateHandling;
-        switch( grid.DegenerateHandling )
-        {
-        case RandomPerturbation:
-	        for (int i = 0 ; i < size() ; i++)
-	        {
-		        this.get(i).RandomPerturb();
-	        }
+        switch (grid.DegenerateHandling) {
+            case RandomPerturbation:
+                for (int i = 0; i < size(); i++) {
+                    this.get(i).RandomPerturb();
+                }
                 grid.DegenerateHandling = CGrid.eDegenerateHandling.None;
-	        break;
-        case DynamicGrid:
+                break;
+            case DynamicGrid:
 
-	        break;
-        case PreDefinedGrid:
-	        for (int i = 0 ; i < size() ; i++)
-	        {
-		        this.get(i).SnapToGrid(grid);
-	        }
-	        grid.DegenerateHandling = CGrid.eDegenerateHandling.PreDefinedGridPreSnapped;
-	        break;
-        case PreDefinedGridPreSnapped:
+                break;
+            case PreDefinedGrid:
+                for (int i = 0; i < size(); i++) {
+                    this.get(i).SnapToGrid(grid);
+                }
+                grid.DegenerateHandling = CGrid.eDegenerateHandling.PreDefinedGridPreSnapped;
+                break;
+            case PreDefinedGridPreSnapped:
 
-	        break;
+                break;
         }
 
 
@@ -130,137 +119,116 @@ public class C2DHoledPolyBaseSet extends ArrayList<C2DHoledPolyBase>{
         int nThreshold = GetMinLineCount();
 
         if (nThreshold == 0)
-	        nThreshold = 10;	// avoid infinate loop.
-    	
+            nThreshold = 10;    // avoid infinate loop.
+
         // Assumed all are size held to start
         SizeHoldSet.addAll(this);
         this.clear();
 
-        do
-        {
-	        // double the threshold
-	        nThreshold *= 3;
+        do {
+            // double the threshold
+            nThreshold *= 3;
 
-	        // Put all the possible intersects back in this.
-	        this.addAll(PossUnionSet);
+            // Put all the possible intersects back in this.
+            this.addAll(PossUnionSet);
             PossUnionSet.clear();
 
-	        // Put all the size held that are small enough back (or in to start with)
-	        while (SizeHoldSet.size() > 0)
-	        {
-		        C2DHoledPolyBase pLast = SizeHoldSet.get(SizeHoldSet.size() - 1);
+            // Put all the size held that are small enough back (or in to start with)
+            while (SizeHoldSet.size() > 0) {
+                C2DHoledPolyBase pLast = SizeHoldSet.get(SizeHoldSet.size() - 1);
                 SizeHoldSet.remove(SizeHoldSet.size() - 1);
 
-		        if (pLast.GetLineCount() > nThreshold)
-		        {
-			        TempSet.add(pLast);
-		        }
-		        else
-		        {
-			        this.add(pLast);
-		        }
-	        }
-	        SizeHoldSet.addAll( TempSet);
+                if (pLast.GetLineCount() > nThreshold) {
+                    TempSet.add(pLast);
+                } else {
+                    this.add(pLast);
+                }
+            }
+            SizeHoldSet.addAll(TempSet);
             TempSet.clear();
 
 
-	        // Cycle through all popping the last and finding a union
-	        while (size() > 0)
-	        {
-		        C2DHoledPolyBase pLast = this.get(size()-1);
-    		    this.remove(size()-1);
+            // Cycle through all popping the last and finding a union
+            while (size() > 0) {
+                C2DHoledPolyBase pLast = this.get(size() - 1);
+                this.remove(size() - 1);
 
-		        boolean bIntersect = false;
+                boolean bIntersect = false;
 
-		        int i = 0;
-		        while ( i < size() && !bIntersect )
-		        {
-			        this.get(i).GetUnion( pLast, UnionSet, grid);
+                int i = 0;
+                while (i < size() && !bIntersect) {
+                    this.get(i).GetUnion(pLast, UnionSet, grid);
 
-			        if (UnionSet.size() == 1)
-			        {
-				        C2DHoledPolyBase pUnion = UnionSet.get(UnionSet.size() - 1);
+                    if (UnionSet.size() == 1) {
+                        C2DHoledPolyBase pUnion = UnionSet.get(UnionSet.size() - 1);
                         UnionSet.remove(UnionSet.size() - 1);
 
-				        if (pUnion.GetLineCount() > nThreshold)
-				        {
-					        remove(i);
-					        SizeHoldSet.add(pUnion);
-				        }
-				        else
-				        {
-					        this.set(i, pUnion);
-					        i++;
-				        }
+                        if (pUnion.GetLineCount() > nThreshold) {
+                            remove(i);
+                            SizeHoldSet.add(pUnion);
+                        } else {
+                            this.set(i, pUnion);
+                            i++;
+                        }
 
-				        bIntersect = true;
-			        }
-			        else
-			        {
-                        if (UnionSet.size() != 0)
-                        {
+                        bIntersect = true;
+                    } else {
+                        if (UnionSet.size() != 0) {
                             grid.LogDegenerateError();
                         }
-				        UnionSet.clear();
-				        i++;
-			        }
-		        }
+                        UnionSet.clear();
+                        i++;
+                    }
+                }
 
-		        if (!bIntersect)
-		        {
-			        boolean bPosInterSect = false;
-			        for (int j = 0 ; j <  SizeHoldSet.size(); j ++)
-			        {
-				        if (pLast.Rim.BoundingRect.Overlaps( 
-							        SizeHoldSet.get(j).Rim.BoundingRect))
-				        {
-					        bPosInterSect = true;	
-					        break;
-				        }
-			        }
+                if (!bIntersect) {
+                    boolean bPosInterSect = false;
+                    for (int j = 0; j < SizeHoldSet.size(); j++) {
+                        if (pLast.Rim.BoundingRect.Overlaps(
+                                SizeHoldSet.get(j).Rim.BoundingRect)) {
+                            bPosInterSect = true;
+                            break;
+                        }
+                    }
 
-			        if (bPosInterSect)
-			        {
-				        PossUnionSet.add( pLast);
-			        }
-			        else
-			        {
-				        NoUnionSet.add(pLast);
-			        }
-		        }
-	        }
+                    if (bPosInterSect) {
+                        PossUnionSet.add(pLast);
+                    } else {
+                        NoUnionSet.add(pLast);
+                    }
+                }
+            }
         }
         while (SizeHoldSet.size() != 0);
 
 
-        this.addAll( NoUnionSet);
+        this.addAll(NoUnionSet);
         NoUnionSet.clear();
 
         grid.DegenerateHandling = DegenerateHandling;
     }
-/**
-*     Adds a new polygon and looks for a possible unification.
-*     Assumes current set is distinct.
-*
-* @param pPoly The polygon to add and possible unify.
-*/
-    public void AddAndUnify(C2DHoledPolyBase pPoly)
-    {
+
+    /**
+     * Adds a new polygon and looks for a possible unification.
+     * Assumes current set is distinct.
+     *
+     * @param pPoly The polygon to add and possible unify.
+     */
+    public void AddAndUnify(C2DHoledPolyBase pPoly) {
         if (!AddIfUnify(pPoly))
             add(pPoly);
     }
-/**
-*     Adds a new polygon set and looks for a possible unifications.
-*     Assumes both sets are distinct.
-*
-* @param pOther The polygon set to add and possible unify.
-*/
-    public void AddAndUnify(C2DHoledPolyBaseSet pOther)
-    {
+
+    /**
+     * Adds a new polygon set and looks for a possible unifications.
+     * Assumes both sets are distinct.
+     *
+     * @param pOther The polygon set to add and possible unify.
+     */
+    public void AddAndUnify(C2DHoledPolyBaseSet pOther) {
         C2DHoledPolyBaseSet TempSet = new C2DHoledPolyBaseSet();
 
-        while (pOther.size() > 0)
-        {
+        while (pOther.size() > 0) {
             C2DHoledPolyBase pLast = pOther.get(pOther.size() - 1);
             pOther.remove(pOther.size() - 1);
 
@@ -268,140 +236,117 @@ public class C2DHoledPolyBaseSet extends ArrayList<C2DHoledPolyBase>{
                 TempSet.add(pLast);
         }
 
-        this.addAll(TempSet) ;
+        this.addAll(TempSet);
     }
-/**
-*     Adds a new polygon ONLY if there is a unifications.
-*     Assumes current set is distinct.
-*
-* @param pPoly The polygon to add if there is a union.
-*/
-    public boolean AddIfUnify(C2DHoledPolyBase pPoly)
-    {
+
+    /**
+     * Adds a new polygon ONLY if there is a unifications.
+     * Assumes current set is distinct.
+     *
+     * @param pPoly The polygon to add if there is a union.
+     */
+    public boolean AddIfUnify(C2DHoledPolyBase pPoly) {
         C2DHoledPolyBaseSet TempSet = new C2DHoledPolyBaseSet();
         C2DHoledPolyBaseSet UnionSet = new C2DHoledPolyBaseSet();
         CGrid grid = new CGrid();
-        while (size() > 0 && pPoly != null)
-        {
-            C2DHoledPolyBase pLast = this.get(size()-1);
+        while (size() > 0 && pPoly != null) {
+            C2DHoledPolyBase pLast = this.get(size() - 1);
             this.remove(size() - 1);
 
             pLast.GetUnion(pPoly, UnionSet, grid);
 
-            if (UnionSet.size() == 1)
-            {
+            if (UnionSet.size() == 1) {
                 pPoly = null;
                 pLast = null;
 
                 AddAndUnify(UnionSet.get(0));
                 UnionSet.clear();
-            }
-            else
-            {
+            } else {
                 //Debug.Assert(UnionSet.size() == 0);
                 UnionSet.clear();
                 TempSet.add(pLast);
             }
         }
 
-        this.addAll( TempSet);
+        this.addAll(TempSet);
         TempSet.clear();
-        
+
         return (pPoly == null);
 
     }
 
-/**
-*     Adds a set of holes to the current set of polygons as holes within them.
-*
-* @param pOther The polygon set to add as holes.
-*/
-    public void AddKnownHoles(ArrayList<C2DPolyBase> pOther)
-    {
-        if (size() != 0)
-        {
-	        while (pOther.size() > 0)
-	        {
-		        C2DPolyBase pLast = pOther.get(pOther.size() - 1);
+    /**
+     * Adds a set of holes to the current set of polygons as holes within them.
+     *
+     * @param pOther The polygon set to add as holes.
+     */
+    public void AddKnownHoles(ArrayList<C2DPolyBase> pOther) {
+        if (size() != 0) {
+            while (pOther.size() > 0) {
+                C2DPolyBase pLast = pOther.get(pOther.size() - 1);
                 pOther.remove(pOther.size() - 1);
-		        if (pLast.Lines.size() > 0)
-		        {
+                if (pLast.Lines.size() > 0) {
                     int i = size() - 1;
-			        boolean bFound = false;
-			        while ( i > 0 && !bFound)
-			        {
-				        if ( this.get(i).Contains( pLast.Lines.get(0).GetPointFrom()))
-				        {
+                    boolean bFound = false;
+                    while (i > 0 && !bFound) {
+                        if (this.get(i).Contains(pLast.Lines.get(0).GetPointFrom())) {
                             this.get(i).AddHole(pLast);
-					        bFound = true;
-				        }
-				        i--;
-			        }
+                            bFound = true;
+                        }
+                        i--;
+                    }
 
-			        if (!bFound)
-			        {
+                    if (!bFound) {
                         this.get(0).AddHole(pLast);
-			        }
-		        }
-	        }
+                    }
+                }
+            }
         }
     }
 
-/**
-*     Total line count for all polygons contained.
-*
-*/
-    public int GetLineCount()
-    {
-        int nResult = 0 ;
+    /**
+     * Total line count for all polygons contained.
+     */
+    public int GetLineCount() {
+        int nResult = 0;
 
-        for (int n = 0; n < size() ; n ++)
-        {
-	        nResult += this.get(n).GetLineCount();
+        for (int n = 0; n < size(); n++) {
+            nResult += this.get(n).GetLineCount();
         }
 
         return nResult;
     }
 
-/**
-*     Minimum line count of all polygons contained.
-*
-*/
-    public int GetMinLineCount()
-    {
-        int nMin = ~(int)0;
+    /**
+     * Minimum line count of all polygons contained.
+     */
+    public int GetMinLineCount() {
+        int nMin = ~(int) 0;
 
-        for(int i = 0 ; i < size(); i++)
-        {
-	        int nCount = this.get(i).GetLineCount();
-	        if( nCount < nMin)
-	        {
-		        nMin = nCount;
-	        }
+        for (int i = 0; i < size(); i++) {
+            int nCount = this.get(i).GetLineCount();
+            if (nCount < nMin) {
+                nMin = nCount;
+            }
         }
         return nMin;
     }
 
-/**
-*     Transformation.
-*
-*/
-    public void Transform(CTransformation pProject)
-    {
-        for (int i = 0 ; i <  this.size(); i++)
-        {
-	        this.get(i).Transform(pProject);
+    /**
+     * Transformation.
+     */
+    public void Transform(CTransformation pProject) {
+        for (int i = 0; i < this.size(); i++) {
+            this.get(i).Transform(pProject);
         }
     }
-/**
-*     Transformation.
-*
-*/
-    public void InverseTransform(CTransformation pProject)
-    {
-        for ( int i = 0 ; i < this.size(); i++)
-        {
-	        this.get(i).InverseTransform(pProject);
+
+    /**
+     * Transformation.
+     */
+    public void InverseTransform(CTransformation pProject) {
+        for (int i = 0; i < this.size(); i++) {
+            this.get(i).InverseTransform(pProject);
         }
     }
 

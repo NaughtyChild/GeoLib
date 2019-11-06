@@ -4,48 +4,42 @@
 package uk.co.geolib.geoprojections;
 
 /**
-* Class representing an albers equal area projection.
-*
-*/
-public class VanDerGrinten extends Projection
-{
+ * Class representing an albers equal area projection.
+ */
+public class VanDerGrinten extends Projection {
 
-/**
-*     Constructor.
-*
-*/
-    public VanDerGrinten()
-    {
+    /**
+     * Constructor.
+     */
+    public VanDerGrinten() {
         m_dStandardLongitude = 0.0;
     }
 
 
-/**
-*    Constructor.
-*
-*/
-    public void Project(double dLatY, double dLongX) 
-    {
+    /**
+     * Constructor.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
 
-        double A1 = Constants.conPI / (dLongX  - m_dStandardLongitude);
+        double A1 = Constants.conPI / (dLongX - m_dStandardLongitude);
 
-        double A = 0.5 * Math.abs( A1 - 1.0 / A1);
+        double A = 0.5 * Math.abs(A1 - 1.0 / A1);
 
-        double theta = Math.asin( Math.abs(2.0* dLatY / Constants.conPI) );
+        double theta = Math.asin(Math.abs(2.0 * dLatY / Constants.conPI));
 
         double cos_theta = Math.cos(theta);
 
         double sin_theta = Math.sin(theta);
 
-        double G = cos_theta / ( sin_theta + cos_theta - 1.0);
+        double G = cos_theta / (sin_theta + cos_theta - 1.0);
 
-        double P = G*(2.0/ Math.sin(theta) - 1.0);
+        double P = G * (2.0 / Math.sin(theta) - 1.0);
 
-        double P2 = P*P;
-        double A2 = A*A;
+        double P2 = P * P;
+        double A2 = A * A;
 
         double Q = A2 + G;
 
@@ -53,19 +47,19 @@ public class VanDerGrinten extends Projection
         double P2A2 = P2 + A2;
         double x0 = G - P2;
         double x1 = A * x0;
-        double x2 = A2 * x0 * x0 - (P2A2)*(G*G - P2);
-        double x = Constants.conPI * ( x1 + Math.sqrt( x2 ) ) /
-				        P2A2;
+        double x2 = A2 * x0 * x0 - (P2A2) * (G * G - P2);
+        double x = Constants.conPI * (x1 + Math.sqrt(x2)) /
+                P2A2;
 
-        if (dLongX  < m_dStandardLongitude )
-	        x = -x;
+        if (dLongX < m_dStandardLongitude)
+            x = -x;
 
 
-        double y = Constants.conPI * Math.abs( P*Q - A* Math.sqrt( (A2 + 1)*(P2A2) - Q*Q)   )  /
-				        P2A2;
+        double y = Constants.conPI * Math.abs(P * Q - A * Math.sqrt((A2 + 1) * (P2A2) - Q * Q)) /
+                P2A2;
 
         if (dLatY < 0)
-	        y = -y;
+            y = -y;
 
 
         dLongX = x;
@@ -74,13 +68,11 @@ public class VanDerGrinten extends Projection
 
     }
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project( GeoLatLong rLatLong, double dx, double dy) 
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
 
         dx = rLatLong.GetLong();
@@ -88,44 +80,42 @@ public class VanDerGrinten extends Projection
         Project(dy, dx);
     }
 
-/**
-*     Project the given x y to lat long using the input parameters to store 
-*     the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX) 
-    {
+    /**
+     * Project the given x y to lat long using the input parameters to store
+     * the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
         double X = dLongX / Constants.conPI;
         double X2 = X * X;
         double Y = dLatY / Constants.conPI;
         double Y2 = Y * Y;
         double X2Y2 = X2 + Y2;
-        double c1 = - Math.abs(Y) * (1 + X2Y2);
+        double c1 = -Math.abs(Y) * (1 + X2Y2);
         double c2 = c1 - 2.0 * Y2 + X2;
-        double c3 = -2.0 * c1 + 1 + 2 * Y2 + X2Y2* X2Y2;
-        double d = Y2 / c3 + (2* c2*c2*c2 / (c3*c3*c3) - 9 * c1*c2 / (c3*c3)) / 27.0;
-        double a1 = (c1 - c2*c2 / (3*c3)) / c3;
-        double m1 = 2 * Math.sqrt( - a1 / 3.0);
-        double theta1 = Math.acos(3.0 * d / ( a1 *m1)) / 3.0;
+        double c3 = -2.0 * c1 + 1 + 2 * Y2 + X2Y2 * X2Y2;
+        double d = Y2 / c3 + (2 * c2 * c2 * c2 / (c3 * c3 * c3) - 9 * c1 * c2 / (c3 * c3)) / 27.0;
+        double a1 = (c1 - c2 * c2 / (3 * c3)) / c3;
+        double m1 = 2 * Math.sqrt(-a1 / 3.0);
+        double theta1 = Math.acos(3.0 * d / (a1 * m1)) / 3.0;
 
-        double dLat = Constants.conPI * ( -m1 * Math.cos(theta1 + Constants.conTHIRDPI) - c2 / (3*c3));
+        double dLat = Constants.conPI * (-m1 * Math.cos(theta1 + Constants.conTHIRDPI) - c2 / (3 * c3));
         if (dLatY < 0)
-	        dLat = -dLat;
+            dLat = -dLat;
 
-        double dLong = Constants.conPI *( X2 + Y2 - 1 + Math.sqrt( 1.0 + 2.0 * ( X2 - Y2) + X2Y2 *  X2Y2 )) / 
-				        (2.0 * X);
+        double dLong = Constants.conPI * (X2 + Y2 - 1 + Math.sqrt(1.0 + 2.0 * (X2 - Y2) + X2Y2 * X2Y2)) /
+                (2.0 * X);
 
         dLong += m_dStandardLongitude;
 
         if (dLong > Constants.conPI)
-	        dLong = Constants.conPI;
+            dLong = Constants.conPI;
         if (dLong < -Constants.conPI)
-	        dLong = - Constants.conPI;
+            dLong = -Constants.conPI;
 
         if (dLat > Constants.conHALFPI)
-	        dLat = Constants.conHALFPI;
+            dLat = Constants.conHALFPI;
         if (dLat < -Constants.conHALFPI)
-	        dLat = - Constants.conHALFPI;
+            dLat = -Constants.conHALFPI;
 
 
         dLatY = dLat * Constants.conDegreesPerRadian;
@@ -134,12 +124,10 @@ public class VanDerGrinten extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong,  double dX,  double dY) 
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLat = dY;
 
         double dLong = dX;
@@ -151,12 +139,10 @@ public class VanDerGrinten extends Projection
         rLatLong.SetLongDegrees(dLong);
     }
 
-/**
-*    
-*
-*/
-    public void SetStandardLongitude(double dStandardLongitude)
-    {
+    /**
+     *
+     */
+    public void SetStandardLongitude(double dStandardLongitude) {
         m_dStandardLongitude = dStandardLongitude * Constants.conRadiansPerDegree;
     }
 

@@ -3,81 +3,71 @@ package uk.co.geolib.geolib;
 
 import java.util.ArrayList;
 
-public class C2DLineBaseSetSet extends ArrayList<C2DLineBaseSet>{
-	
+public class C2DLineBaseSetSet extends ArrayList<C2DLineBaseSet> {
+
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
+     *
+     */
+    private static final long serialVersionUID = 1L;
 
-/**
-*     Constructor
-*
-*/
-    public C2DLineBaseSetSet() { }
+    /**
+     * Constructor
+     */
+    public C2DLineBaseSetSet() {
+    }
 
 
-/**
-*     Extracts all of the line sets frm the other.
-*
-* @param S2 The other set.
-*/
-    public void ExtractAllOf(ArrayList<C2DLineBaseSet> S2)
-    {
-        for (int i = 0; i < S2.size(); i++)
-        {
+    /**
+     * Extracts all of the line sets frm the other.
+     *
+     * @param S2 The other set.
+     */
+    public void ExtractAllOf(ArrayList<C2DLineBaseSet> S2) {
+        for (int i = 0; i < S2.size(); i++) {
             add(S2.get(i));
         }
         S2.clear();
     }
 
-/**
-*     Extracts at the index supplied.
-*
-* @param nIndex The index to extract at.
-*/
-    public C2DLineBaseSet ExtractAt(int nIndex)
-    {
+    /**
+     * Extracts at the index supplied.
+     *
+     * @param nIndex The index to extract at.
+     */
+    public C2DLineBaseSet ExtractAt(int nIndex) {
         C2DLineBaseSet Result = this.get(nIndex);
         this.remove(nIndex);
         return Result;
     }
-/**
-*     Merges the joining routes together if there are any.
-*
-*/
-    public void MergeJoining()
-    {
+
+    /**
+     * Merges the joining routes together if there are any.
+     */
+    public void MergeJoining() {
         C2DLineBaseSetSet Temp = new C2DLineBaseSetSet();
 
-        while (size() > 0)
-        {
-	        // pop the last one.
-	        C2DLineBaseSet pLast = this.get(size() - 1);
+        while (size() > 0) {
+            // pop the last one.
+            C2DLineBaseSet pLast = this.get(size() - 1);
             this.remove(size() - 1);
 
-	        if (!pLast.IsClosed(true))
-	        {
-		        int i = 0 ;
-		        while ( i < size() )
-		        {
-			        if ( ! this.get(i).IsClosed(true))
-			        {
-				        if (this.get(i).AddIfCommonEnd( pLast))
-				        {
-					        pLast = null;
-                            i += size();	// escape
-				        }
-			        }
+            if (!pLast.IsClosed(true)) {
+                int i = 0;
+                while (i < size()) {
+                    if (!this.get(i).IsClosed(true)) {
+                        if (this.get(i).AddIfCommonEnd(pLast)) {
+                            pLast = null;
+                            i += size();    // escape
+                        }
+                    }
 
-			        i++;
-		        }
-	        }
+                    i++;
+                }
+            }
 
-	        if (pLast != null)
-	        {
-		        Temp.add( pLast);
-	        }
+            if (pLast != null) {
+                Temp.add(pLast);
+            }
         }
 
         this.ExtractAllOf(Temp);
@@ -112,69 +102,56 @@ public class C2DLineBaseSetSet extends ArrayList<C2DLineBaseSet>{
 //}
 
 
-
-/**
-*     Adds all the routes from the other to this if the join a routes in this.
-*
-* @param Other The other set.
-*/
-    public void AddJoining(  C2DLineBaseSetSet Other )
-    {
-        C2DLineBaseSetSet Temp = new C2DLineBaseSetSet();
-    	
-        while (Other.size() > 0 )
-        {
-	        C2DLineBaseSet pLast = Other.ExtractAt(Other.size() - 1);
-
-	        int i = 0;
-	        while ( i < size())
-	        {
-		        if ( !this.get(i).IsClosed(true) && this.get(i).AddIfCommonEnd( pLast))
-		        {
-			        pLast = null;
-                    i += size();	// escape
-		        }
-
-		        i++;
-	        }
-
-	        if (pLast != null)
-	        {
-		        Temp.add(pLast);
-	        }
-        }
-
-        while (Temp.size() > 0)
-        {
-            Other.add(Temp.ExtractAt(Temp.size() - 1));
-        }
-    }
-
-/**
-*     Adds the routes in the other set that are closed.        
-*
-* @param Other The other set.
-* @param bEndsOnly True if only the ends require checking.
-*/
-    public void AddClosed(C2DLineBaseSetSet Other , boolean bEndsOnly)
-    {
+    /**
+     * Adds all the routes from the other to this if the join a routes in this.
+     *
+     * @param Other The other set.
+     */
+    public void AddJoining(C2DLineBaseSetSet Other) {
         C2DLineBaseSetSet Temp = new C2DLineBaseSetSet();
 
-        while (Other.size() > 0)
-        {
+        while (Other.size() > 0) {
             C2DLineBaseSet pLast = Other.ExtractAt(Other.size() - 1);
-            if (pLast.IsClosed(bEndsOnly))
-            {
-                this.add(pLast);
+
+            int i = 0;
+            while (i < size()) {
+                if (!this.get(i).IsClosed(true) && this.get(i).AddIfCommonEnd(pLast)) {
+                    pLast = null;
+                    i += size();    // escape
+                }
+
+                i++;
             }
-            else
-            {
+
+            if (pLast != null) {
                 Temp.add(pLast);
             }
         }
 
-        while (Temp.size() > 0)
-        {
+        while (Temp.size() > 0) {
+            Other.add(Temp.ExtractAt(Temp.size() - 1));
+        }
+    }
+
+    /**
+     * Adds the routes in the other set that are closed.
+     *
+     * @param Other     The other set.
+     * @param bEndsOnly True if only the ends require checking.
+     */
+    public void AddClosed(C2DLineBaseSetSet Other, boolean bEndsOnly) {
+        C2DLineBaseSetSet Temp = new C2DLineBaseSetSet();
+
+        while (Other.size() > 0) {
+            C2DLineBaseSet pLast = Other.ExtractAt(Other.size() - 1);
+            if (pLast.IsClosed(bEndsOnly)) {
+                this.add(pLast);
+            } else {
+                Temp.add(pLast);
+            }
+        }
+
+        while (Temp.size() > 0) {
             Other.add(Temp.ExtractAt(Temp.size() - 1));
         }
     }

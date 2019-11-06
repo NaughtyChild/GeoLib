@@ -3,29 +3,23 @@
 package uk.co.geolib.geoprojections;
 
 /**
-* Class representing a circle.
-*
-*/
-public class HorizontalRangeHeading extends Projection
-{
+ * Class representing a circle.
+ */
+public class HorizontalRangeHeading extends Projection {
 
 
-/**
-*     Constructor.
-*
-*/
-    public HorizontalRangeHeading()
-    {
-    	
+    /**
+     * Constructor.
+     */
+    public HorizontalRangeHeading() {
+
     }
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the 
-*     result.
-*
-*/
-    public void Project(double dLatY, double dLongX) 
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the
+     * result.
+     */
+    public void Project(double dLatY, double dLongX) {
         GeoLatLong LatLong = new GeoLatLong(dLatY * Constants.conRadiansPerDegree, dLongX * Constants.conRadiansPerDegree);
 
         Double dRange = 0.0;
@@ -41,26 +35,22 @@ public class HorizontalRangeHeading extends Projection
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project(GeoLatLong rLatLong, double dx, double dy)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLat();
         dx = rLatLong.GetLong();
 
         Project(dy, dx);
     }
 
-/**
-*     Project the given x y to lat long using the input parameters to store the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX) 
-    {
-        double dHdng =  Math.atan2(dLongX, dLatY);
+    /**
+     * Project the given x y to lat long using the input parameters to store the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
+        double dHdng = Math.atan2(dLongX, dLatY);
 
         double dRange = Math.sqrt(dLongX * dLongX + dLatY * dLatY);
 
@@ -76,12 +66,10 @@ public class HorizontalRangeHeading extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong, double dX, double dY)
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLat = dY;
 
         double dLong = dX;
@@ -94,24 +82,20 @@ public class HorizontalRangeHeading extends Projection
     }
 
 
-/**
-*    
-*
-*/
-    void SetOrigin(double dLat, double dLong)
-    {
+    /**
+     *
+     */
+    void SetOrigin(double dLat, double dLong) {
         m_Origin.SetLatDegrees(dLat);
 
         m_Origin.SetLongDegrees(dLong);
 
     }
 
-/**
-*    
-*
-*/
-    GeoLatLong GetOrigin()
-    {
+    /**
+     *
+     */
+    GeoLatLong GetOrigin() {
         return m_Origin;
     }
 

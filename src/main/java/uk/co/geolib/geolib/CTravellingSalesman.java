@@ -7,54 +7,47 @@ import java.util.Collections;
 import java.util.LinkedList;
 import java.util.ListIterator;
 
-public class CTravellingSalesman extends LinkedList<C2DPoint>{
+public class CTravellingSalesman extends LinkedList<C2DPoint> {
     /**
-	 * 
-	 */
-	private static final long serialVersionUID = 1L;
-/**
-*     Constructor
-*
-*/
-    public CTravellingSalesman() {}
+     *
+     */
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * Constructor
+     */
+    public CTravellingSalesman() {
+    }
 
 
-/**
-*     Allocates points from a set by removing them from the set
-*
-*/
-    public void SetPointsDirect(ArrayList<C2DPoint> Points)
-    {
+    /**
+     * Allocates points from a set by removing them from the set
+     */
+    public void SetPointsDirect(ArrayList<C2DPoint> Points) {
         clear();
 
-        for (int i = 0; i < Points.size(); i++)
-        {
+        for (int i = 0; i < Points.size(); i++) {
             this.addLast(Points.get(i));
         }
         Points.clear();
     }
 
-/**
-*     Extracts the points into the set
-*
-*/
-    public void ExtractPoints(ArrayList<C2DPoint> Points)
-    {
+    /**
+     * Extracts the points into the set
+     */
+    public void ExtractPoints(ArrayList<C2DPoint> Points) {
         Points.addAll(this);
     }
 
-/**
-*     Inserts a point optimally into this 
-*
-*/
-    public void InsertOptimallyWithIterator(C2DPoint pt)
-    {
+    /**
+     * Inserts a point optimally into this
+     */
+    public void InsertOptimallyWithIterator(C2DPoint pt) {
         // Special cases if there are less than 3 points
-        if (size() < 2)
-        {
-	        if (size() == 1)
-		        this.addLast(pt);
-	        return;
+        if (size() < 2) {
+            if (size() == 1)
+                this.addLast(pt);
+            return;
         }
 
         // a pointer to a point and the point after it
@@ -64,11 +57,11 @@ public class CTravellingSalesman extends LinkedList<C2DPoint>{
 
         ptH1 = get(0);
         ptH2 = get(1);
-        
+
         ListIterator<C2DPoint> IterInsert = this.listIterator();
         IterInsert.next();
         ListIterator<C2DPoint> Iter = this.listIterator();
-        Iter.next();      
+        Iter.next();
 
         // Find the assumed minimum distance expansion. i.e. if we insert the point
         // between the first and second points what is the increase in the route.
@@ -76,35 +69,30 @@ public class CTravellingSalesman extends LinkedList<C2DPoint>{
 
         // Now go through all the other positions and do the same test, recording the
         // optimal position.
-       
-        while (Iter.hasNext())
-        {
-	        ptH1 = ptH2;
-	        ptH2 = Iter.next();
 
-	        double dExp = ptH1.Distance(pt) + pt.Distance(ptH2) - ptH1.Distance(ptH2);
-	        if (dExp < dMinExp)
-	        {
-		        dMinExp = dExp;
-		        IterInsert = Iter;
-	        }
+        while (Iter.hasNext()) {
+            ptH1 = ptH2;
+            ptH2 = Iter.next();
+
+            double dExp = ptH1.Distance(pt) + pt.Distance(ptH2) - ptH1.Distance(ptH2);
+            if (dExp < dMinExp) {
+                dMinExp = dExp;
+                IterInsert = Iter;
+            }
         }
         // Finally just insert it in the list at the best place.
         this.add(IterInsert.previousIndex(), pt);
     }
-    
-/**
-*     Inserts a point optimally into this 
-*
-*/
-    public void InsertOptimally(C2DPoint pt)
-    {
+
+    /**
+     * Inserts a point optimally into this
+     */
+    public void InsertOptimally(C2DPoint pt) {
         // Special cases if there are less than 3 points
-        if (size() < 2)
-        {
-	        if (size() == 1)
-		        this.addLast(pt);
-	        return;
+        if (size() < 2) {
+            if (size() == 1)
+                this.addLast(pt);
+            return;
         }
 
         // a pointer to a point and the point after it
@@ -114,7 +102,6 @@ public class CTravellingSalesman extends LinkedList<C2DPoint>{
 
         int IterInsert = 1;
 
-     
 
         // Find the assumed minimum distance expansion. i.e. if we insert the point
         // between the first and second points what is the increase in the route.
@@ -123,143 +110,130 @@ public class CTravellingSalesman extends LinkedList<C2DPoint>{
         // Now go through all the other positions and do the same test, recording the
         // optimal position.
         int Iter = 2;
-        while (Iter < size())
-        {
-	        ptH1 = ptH2;
-	        ptH2 = get(Iter);
+        while (Iter < size()) {
+            ptH1 = ptH2;
+            ptH2 = get(Iter);
 
-	        double dExp = ptH1.Distance(pt) + pt.Distance(ptH2) - ptH1.Distance(ptH2);
-	        if (dExp < dMinExp)
-	        {
-		        dMinExp = dExp;
-		        IterInsert = Iter;
-	        }
-	        Iter++;
+            double dExp = ptH1.Distance(pt) + pt.Distance(ptH2) - ptH1.Distance(ptH2);
+            if (dExp < dMinExp) {
+                dMinExp = dExp;
+                IterInsert = Iter;
+            }
+            Iter++;
         }
         // Finally just insert it in the list at the best place.
         this.add(IterInsert, pt);
     }
-    
 
-/**
-*     Refines the set, trying to find optimal positions for the points
-*
-*/
-    public void Refine()
-    {
+
+    /**
+     * Refines the set, trying to find optimal positions for the points
+     */
+    public void Refine() {
         // CHECK FOR LESS THAN 2 ITEMS.
         if (size() < 2)
-	        return;
+            return;
 
         boolean bRepeat = true;
 
         int nIt = 0;
 
-        while (bRepeat && nIt < conMaxIterations)
-        {
-	        nIt++;
-	        int IterRemove = 1;
+        while (bRepeat && nIt < conMaxIterations) {
+            nIt++;
+            int IterRemove = 1;
 
-	        bRepeat = false;
-	        while (IterRemove < size() - 1)
-	        {
+            bRepeat = false;
+            while (IterRemove < size() - 1) {
 
-	        	int IterInsert = IterRemove - 1;
+                int IterInsert = IterRemove - 1;
 
 
                 int nCountBack = 1;
-		        boolean bFound = false;
-		        int IterRemoveBefore;
+                boolean bFound = false;
+                int IterRemoveBefore;
                 int IterRemoveAfter;
                 int IterInsertBefore;
 
-                while (nCountBack < conRefineProximity && IterInsert != 0)
-		        {
-			        IterRemoveBefore = IterRemove - 1;
-			        IterRemoveAfter = IterRemove + 1;
-			        IterInsertBefore = IterInsert - 1;
+                while (nCountBack < conRefineProximity && IterInsert != 0) {
+                    IterRemoveBefore = IterRemove - 1;
+                    IterRemoveAfter = IterRemove + 1;
+                    IterInsertBefore = IterInsert - 1;
 
 
-			        double dCurrentPerimPart = get(IterRemoveBefore).Distance(get(IterRemove)) + 
-			        get(IterRemove).Distance(get(IterRemoveAfter)) +
-			        		get(IterInsertBefore).Distance(get(IterInsert));
-			        double dNewPerimPart = get(IterRemoveBefore).Distance(get(IterRemoveAfter)) +
-			        		get(IterInsertBefore).Distance(get(IterRemove)) +
-			        				get(IterRemove).Distance(get(IterInsert));
-			        if (dNewPerimPart < dCurrentPerimPart)
-			        {
-				        C2DPoint ptRemove = get(IterRemove);
+                    double dCurrentPerimPart = get(IterRemoveBefore).Distance(get(IterRemove)) +
+                            get(IterRemove).Distance(get(IterRemoveAfter)) +
+                            get(IterInsertBefore).Distance(get(IterInsert));
+                    double dNewPerimPart = get(IterRemoveBefore).Distance(get(IterRemoveAfter)) +
+                            get(IterInsertBefore).Distance(get(IterRemove)) +
+                            get(IterRemove).Distance(get(IterInsert));
+                    if (dNewPerimPart < dCurrentPerimPart) {
+                        C2DPoint ptRemove = get(IterRemove);
                         this.remove(IterRemove);
                         this.add(IterInsert, ptRemove);
 
-				        bFound = true;
-				        IterRemove = IterRemoveAfter; // WE HAVE GONE BACK SO PUT THE REMOVAL POINT BACK HERE AND SEARCH AGAIN.
-				        break;
-			        }
+                        bFound = true;
+                        IterRemove = IterRemoveAfter; // WE HAVE GONE BACK SO PUT THE REMOVAL POINT BACK HERE AND SEARCH AGAIN.
+                        break;
+                    }
                     IterInsert = IterInsert - 1;
-			        nCountBack++;
-		        }
-    			
-		        // Now go forward along the list untill we find a better place. Only go so far.
-		        int nCountForward = 2;
-		        IterInsert = IterRemove; // The item considered for a new place.
+                    nCountBack++;
+                }
+
+                // Now go forward along the list untill we find a better place. Only go so far.
+                int nCountForward = 2;
+                IterInsert = IterRemove; // The item considered for a new place.
                 IterInsert = IterInsert + 1;
-		        if (IterInsert != size())
+                if (IterInsert != size())
                     IterInsert = IterInsert + 1; // Go forward 2 to avoid taking it out and putting it back in the same place.
-		        else
-			        nCountForward = conRefineProximity; // get out
+                else
+                    nCountForward = conRefineProximity; // get out
 
-		        while (!bFound && nCountForward < conRefineProximity && IterInsert < size() )
-		        {
-			        IterRemoveBefore = IterRemove;
+                while (!bFound && nCountForward < conRefineProximity && IterInsert < size()) {
+                    IterRemoveBefore = IterRemove;
                     IterRemoveBefore = IterRemoveBefore - 1; // This is the point before the removal
-			        IterRemoveAfter = IterRemove;
+                    IterRemoveAfter = IterRemove;
                     IterRemoveAfter = IterRemoveAfter + 1; // This is the point after the removal.
-			        IterInsertBefore = IterInsert;
-                    IterInsertBefore = IterInsertBefore -1;// This is the point before the potential insertion point.
+                    IterInsertBefore = IterInsert;
+                    IterInsertBefore = IterInsertBefore - 1;// This is the point before the potential insertion point.
 
 
-			        double dCurrentPerimPart = get(IterRemoveBefore).Distance(get(IterRemove)) + 
-			        		get(IterRemove).Distance(get(IterRemoveAfter)) +
-			        				get(IterInsertBefore).Distance(get(IterInsert));
-			        double dNewPerimPart = get(IterRemoveBefore).Distance(get(IterRemoveAfter)) +
-			        		get(IterInsertBefore).Distance(get(IterRemove)) +
-			        				get(IterRemove).Distance(get(IterInsert));
-			        if (dNewPerimPart  < dCurrentPerimPart)
-			        {
-				        C2DPoint ptRemove = get(IterRemove);
-                        this.remove( IterRemove );
-                        this.add(  IterInsert, ptRemove );
+                    double dCurrentPerimPart = get(IterRemoveBefore).Distance(get(IterRemove)) +
+                            get(IterRemove).Distance(get(IterRemoveAfter)) +
+                            get(IterInsertBefore).Distance(get(IterInsert));
+                    double dNewPerimPart = get(IterRemoveBefore).Distance(get(IterRemoveAfter)) +
+                            get(IterInsertBefore).Distance(get(IterRemove)) +
+                            get(IterRemove).Distance(get(IterInsert));
+                    if (dNewPerimPart < dCurrentPerimPart) {
+                        C2DPoint ptRemove = get(IterRemove);
+                        this.remove(IterRemove);
+                        this.add(IterInsert, ptRemove);
 
-				        IterRemove = IterRemoveAfter; 
+                        IterRemove = IterRemoveAfter;
 
-				        bFound = true; 
-				        break;
-			        }
+                        bFound = true;
+                        break;
+                    }
                     IterInsert = IterInsert + 1;
-			        nCountForward++;
-		        }
-    			
-		        if (bFound) bRepeat = true;
+                    nCountForward++;
+                }
 
-		        if (!bFound)
-			        IterRemove = IterRemove + 1;
-	        }	// while Remove.
+                if (bFound) bRepeat = true;
+
+                if (!bFound)
+                    IterRemove = IterRemove + 1;
+            }    // while Remove.
         } // while bRepeat.
 
     }
 
-/**
-*     Refines the set, trying to find optimal positions for the points
-*
-*/
-    public void Refine2()
-    {
+    /**
+     * Refines the set, trying to find optimal positions for the points
+     */
+    public void Refine2() {
         int nSize = size();
         if (nSize < 4)
-	        return;
-        
-        
+            return;
+
 
         int Iter = 0;
         int Iter1;
@@ -273,73 +247,65 @@ public class CTravellingSalesman extends LinkedList<C2DPoint>{
 
         int nIt = 0;
 
-        while (bRepeat && nIt < conMaxIterations)
-        {
-	        nIt++;
-	        bRepeat = false;
-	        while (nIndex < nIndexLimit)
-	        {
-		        Iter1 = Iter;
+        while (bRepeat && nIt < conMaxIterations) {
+            nIt++;
+            bRepeat = false;
+            while (nIndex < nIndexLimit) {
+                Iter1 = Iter;
                 Iter1 = Iter1 + 1;
-		        Iter2 = Iter;	
-		        Iter2 = Iter2 + 1;
+                Iter2 = Iter;
                 Iter2 = Iter2 + 1;
-		        Iter3 = Iter;
+                Iter2 = Iter2 + 1;
+                Iter3 = Iter;
                 Iter3 = Iter3 + 1;
-		        Iter3 = Iter3 + 1;
-		        Iter3 = Iter3 + 1;
+                Iter3 = Iter3 + 1;
+                Iter3 = Iter3 + 1;
 
-		        double dCurrentPerimPart = get(Iter).Distance(get(Iter1)) + 
-		        		get(Iter1).Distance(get(Iter2)) +
-		        				get(Iter2).Distance(get(Iter3));
+                double dCurrentPerimPart = get(Iter).Distance(get(Iter1)) +
+                        get(Iter1).Distance(get(Iter2)) +
+                        get(Iter2).Distance(get(Iter3));
 
-		        double dNewPerimPart = get(Iter).Distance(get(Iter2)) +
-		        		get(Iter2).Distance(get(Iter1)) +
-		        				get(Iter1).Distance(get(Iter3));
+                double dNewPerimPart = get(Iter).Distance(get(Iter2)) +
+                        get(Iter2).Distance(get(Iter1)) +
+                        get(Iter1).Distance(get(Iter3));
 
-		        if (dCurrentPerimPart > dNewPerimPart)
-		        {
-			        C2DPoint pRem = get(Iter2);
+                if (dCurrentPerimPart > dNewPerimPart) {
+                    C2DPoint pRem = get(Iter2);
                     this.remove(Iter2);
                     this.add(Iter1, pRem);
 
-			        bRepeat = true;
-		        }
+                    bRepeat = true;
+                }
 
 
-		        Iter = Iter + 1;
-		        nIndex++;
-	        }	
+                Iter = Iter + 1;
+                nIndex++;
+            }
 
         }
     }
 
-/**
-*     Brute force optimisation
-*
-*/
-    public void SimpleReorder()
-    {
+    /**
+     * Brute force optimisation
+     */
+    public void SimpleReorder() {
         // CHECK FOR LESS THAN 2 ITEMS.
         if (size() < 2)
-	        return;
+            return;
 
         int IterRemove = 0;
         IterRemove = IterRemove + 1;
         int IterRemoveLimit = size() - 1;
 
-        while (IterRemove != IterRemoveLimit)
-        {
+        while (IterRemove != IterRemoveLimit) {
             int IterInsert = 0;
             IterInsert = IterInsert + 1;
 
-	        while (IterInsert != size())
-	        {
-		        if (IterInsert == IterRemove)
-		        {
-			        IterInsert  = IterInsert + 1;
-			        continue; // No point removing it and putting back in the same place.
-		        }
+            while (IterInsert != size()) {
+                if (IterInsert == IterRemove) {
+                    IterInsert = IterInsert + 1;
+                    continue; // No point removing it and putting back in the same place.
+                }
 
                 int IterRemoveBefore = IterRemove;
                 IterRemoveBefore = IterRemoveBefore - 1;
@@ -349,22 +315,21 @@ public class CTravellingSalesman extends LinkedList<C2DPoint>{
                 IterInsertBefore = IterInsertBefore - 1;
 
                 double dCurrentPerimPart = get(IterRemoveBefore).Distance(get(IterRemove)) +
-                		get(IterRemove).Distance(get(IterRemoveAfter)) +
-                				get(IterInsertBefore).Distance(get(IterInsert));
+                        get(IterRemove).Distance(get(IterRemoveAfter)) +
+                        get(IterInsertBefore).Distance(get(IterInsert));
                 double dNewPerimPart = get(IterRemoveBefore).Distance(get(IterRemoveAfter)) +
-                		get(IterInsertBefore).Distance(get(IterRemove)) +
-                				get(IterRemove).Distance(get(IterInsert));
-		        if (dNewPerimPart < dCurrentPerimPart)
-		        {
+                        get(IterInsertBefore).Distance(get(IterRemove)) +
+                        get(IterRemove).Distance(get(IterInsert));
+                if (dNewPerimPart < dCurrentPerimPart) {
                     C2DPoint ptRemove = get(IterRemove);
                     this.remove(IterRemove);
                     this.add(IterInsert, ptRemove);
 
-			        break;
-		        }
+                    break;
+                }
                 IterInsert = IterInsert + 1;
 
-	        }
+            }
 
             IterRemove = IterRemove + 1;
         }
@@ -372,12 +337,10 @@ public class CTravellingSalesman extends LinkedList<C2DPoint>{
 
     }
 
-/**
-*     Optimises the position of the points
-*
-*/
-    public void Optimize()
-    {
+    /**
+     * Optimises the position of the points
+     */
+    public void Optimize() {
         if (size() < 4)
             return;
 
@@ -400,10 +363,9 @@ public class CTravellingSalesman extends LinkedList<C2DPoint>{
         // Sort the rest by approx distance from the line in reverse order so we can get them off the end.
         Points.SortByDistance(pStart.GetMidPoint(pEnd));
         Collections.reverse(Points);
- 
+
         // Add them all in the most sensible place (not gauranteed).
-        while (Points.size() > 0)
-        {
+        while (Points.size() > 0) {
             this.InsertOptimally(Points.get(Points.size() - 1));
             Points.remove(Points.size() - 1);
         }

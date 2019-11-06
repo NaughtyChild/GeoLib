@@ -3,20 +3,14 @@
 package uk.co.geolib.geoprojections;
 
 
-
-
 /**
-* Class representing an albers equal area projection.
-*
-*/
-public class AlbersEqualAreaConic extends Projection
-{
-/**
-*     Destructor.
-*
-*/
-    public AlbersEqualAreaConic()   
-    {
+ * Class representing an albers equal area projection.
+ */
+public class AlbersEqualAreaConic extends Projection {
+    /**
+     * Destructor.
+     */
+    public AlbersEqualAreaConic() {
         m_dStandardParallel1 = Constants.conTHIRDPI;
 
         m_dStandardParallel2 = Constants.conTHIRDPI;
@@ -29,13 +23,11 @@ public class AlbersEqualAreaConic extends Projection
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the 
-*     result.
-*
-*/
-    public void Project(double dLatY, double dLongX)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the
+     * result.
+     */
+    public void Project(double dLatY, double dLongX) {
         dLatY *= Constants.conRadiansPerDegree;
 
         dLongX *= Constants.conRadiansPerDegree;
@@ -50,25 +42,21 @@ public class AlbersEqualAreaConic extends Projection
     }
 
 
-/**
-*     Project the given lat long to x, y using the input parameters to store the result and retaining 
-*     the lat long in the class passed.
-*
-*/
-    public void Project(GeoLatLong rLatLong, double dx, double dy)
-    {
+    /**
+     * Project the given lat long to x, y using the input parameters to store the result and retaining
+     * the lat long in the class passed.
+     */
+    public void Project(GeoLatLong rLatLong, double dx, double dy) {
         dy = rLatLong.GetLatDegrees();
         dx = rLatLong.GetLongDegrees();
 
         Project(dy, dx);
     }
 
-/**
-*     Project the given x y to lat long using the input parameters to store the result.	
-*
-*/
-    public void InverseProject(double dLatY, double dLongX)
-    {
+    /**
+     * Project the given x y to lat long using the input parameters to store the result.
+     */
+    public void InverseProject(double dLatY, double dLongX) {
         double theta = Math.atan2(dLongX, (m_dP0 - dLatY));
 
         double dP = Math.sqrt(dLongX * dLongX + (m_dP0 - dLatY) * (m_dP0 - dLatY));
@@ -83,12 +71,10 @@ public class AlbersEqualAreaConic extends Projection
     }
 
 
-/**
-*     Project the given x y to lat long using the input lat long class to get the result.
-*
-*/
-    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) 
-    {
+    /**
+     * Project the given x y to lat long using the input lat long class to get the result.
+     */
+    public void InverseProject(GeoLatLong rLatLong, double dX, double dY) {
         double dLat = dY;
 
         double dLong = dX;
@@ -101,13 +87,10 @@ public class AlbersEqualAreaConic extends Projection
     }
 
 
-
-/**
-*     
-*
-*/
-    void SetStandardParallels(double dStandardParallel, double dStandardParalle2)
-    {
+    /**
+     *
+     */
+    void SetStandardParallels(double dStandardParallel, double dStandardParalle2) {
         m_dStandardParallel1 = dStandardParallel * Constants.conRadiansPerDegree;
 
         m_dStandardParallel2 = dStandardParalle2 * Constants.conRadiansPerDegree;
@@ -116,12 +99,10 @@ public class AlbersEqualAreaConic extends Projection
     }
 
 
-/**
-*     
-*
-*/
-    void SetOrigin(double dLat, double dLong)
-    {
+    /**
+     *
+     */
+    void SetOrigin(double dLat, double dLong) {
         m_dOriginLat = dLat * Constants.conRadiansPerDegree;
 
         m_dOriginLong = dLong * Constants.conRadiansPerDegree;
@@ -129,13 +110,11 @@ public class AlbersEqualAreaConic extends Projection
         CalculateConstants();
     }
 
-/**
-*     
-*
-*/
-    void CalculateConstants()
-    {
-        m_sin_SP1 = Math.sin( m_dStandardParallel1 );
+    /**
+     *
+     */
+    void CalculateConstants() {
+        m_sin_SP1 = Math.sin(m_dStandardParallel1);
 
         m_sin_SP2 = Math.sin(m_dStandardParallel2);
 
@@ -150,7 +129,7 @@ public class AlbersEqualAreaConic extends Projection
     }
 
 
-	double m_dStandardParallel1;
+    double m_dStandardParallel1;
 
     double m_dStandardParallel2;
 
